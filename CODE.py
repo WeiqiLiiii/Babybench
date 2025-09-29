@@ -67,7 +67,7 @@ class Encoder(nn.Module):
         t = torch.relu(self.tactile(obs["tactile"]))
         return self.fuse(torch.cat([v, p, t], dim=-1))
 
-#Actor–Critic network construction (just a frame)
+#policy value network construction (just a frame)
 class PolicyValue(nn.Module):
     def __init__(self, in_dim, act_dim):
         super().__init__()
@@ -141,7 +141,7 @@ def touch_bonus(x, stats: TouchStats, k=3.0, dead=0.1, z_clip=5.0, peak_thresh=2
     r = w_peak * peak_part + w_rms * rms_part + w_delta * delta_part
     return float(np.clip(r, 0.0, 1.0))
 
-#this function is used for hand regard 调惩罚
+#this function is used for hand regard 
 class RegardHelper:
     def __init__(self, H=64, W=64, crop=0.5):#size of the eye and percentage of the central area
         ch = int(H*crop/2); cw = int(W*crop/2)
@@ -173,7 +173,7 @@ def hand_regard_bonus(eye_rgb, proprio_vec, helper: RegardHelper):
 
 
 
-# 用tanh来进行动作范围限制（符合物理极限），让它限制在-1，1。
+# use the tanh function to limit the range of motion (conforming to physical constraints), restricting it to -1 to 1.
 class TanhNormal:
     def __init__(self, mu, log_std):
         self.mu = mu
@@ -271,7 +271,7 @@ def compute_gae(rew, val, done, gamma=0.99, lam=0.95):
     adv = (adv - adv.mean()) / (adv.std() + 1e-8)
     return adv, ret
 
-#
+
 class EMANorm:#Reward Normalization (Preventing excessive or insufficient reward scales)
     def __init__(self, beta=0.01):
         self.mean = 0.0
