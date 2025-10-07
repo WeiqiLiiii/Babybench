@@ -37,7 +37,7 @@ env = gym.make("BabyBench")
 obs, _ = env.reset()
 print(obs)
 
-#avoid negative step length
+#Seamlessly convert NumPy data into PyTorch tensors
 def to_torch_contig(x, device, dtype=torch.float32, add_batch=True):
     t = torch.from_numpy(np.ascontiguousarray(x)).to(device=device, dtype=dtype)
     return t.unsqueeze(0) if add_batch else t
