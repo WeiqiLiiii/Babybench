@@ -177,7 +177,7 @@ def hand_regard_bonus(eye_rgb, proprio_vec, helper: RegardHelper):
 class TanhNormal:
     def __init__(self, mu, log_std):
         self.mu = mu
-        self.log_std = log_std.clamp(-5, 2)#限制范围，避免梯度爆炸
+        self.log_std = log_std.clamp(-5, 2)#Limit the scope to prevent gradient explosion
         self.std = torch.exp(self.log_std)
         self.normal = torch.distributions.Normal(self.mu, self.std)
     def sample(self):
@@ -185,7 +185,7 @@ class TanhNormal:
         a = torch.tanh(x)
         log_prob = self.normal.log_prob(x) - torch.log(1 - a.pow(2) + 1e-6)
         return a, log_prob.sum(-1)
-    def log_prob(self, a): #加个修正，让输出更平滑
+    def log_prob(self, a): #Add a correction to make the output smoother
         atanh = 0.5 * (torch.log1p(a + 1e-6) - torch.log1p(-a + 1e-6))
         log_prob = self.normal.log_prob(atanh) - torch.log(1 - a.pow(2) + 1e-6)
         return log_prob.sum(-1)
